@@ -141,11 +141,12 @@ def main():
             sniff(iface=args.interface, prn=build_packet_cb(args.db, args.stdout, IGNORED),
                   store=0, lfilter=lambda x:x.haslayer(Dot11ProbeReq))
         # bring the interface back up in case it goes down
-        except socket.error:
-            print "Lost connection to interface. Restoring..."
-            os.system('ifconfig %s down' % args.interface)
-            os.system('ifconfig %s up' % args.interface)
-            continue
+        except socket.error as e:
+            if str(e) == "[Errno 100] Network is down":
+                print "Lost connection to interface. Restoring..."
+                os.system('ifconfig %s down' % args.interface)
+                os.system('ifconfig %s up' % args.interface)
+                continue
 
 if __name__ == '__main__':
     try:
