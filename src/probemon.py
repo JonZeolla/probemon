@@ -28,7 +28,7 @@ def insert_into_db(fields, db):
     c.execute('select id from vendor where name=?', (vendor,))
     row = c.fetchone()
     if row is None:
-        c.execute('insert into vendor (name) values(?)', (vendor,))
+        c.execute('insert into vendor (date,name) values(?, ?)', (date, vendor,))
         c.execute('select id from vendor where name=?', (vendor,))
         row = c.fetchone()
     vendor_id = row[0]
@@ -36,7 +36,7 @@ def insert_into_db(fields, db):
     c.execute('select id from mac where address=?', (mac,))
     row = c.fetchone()
     if row is None:
-        c.execute('insert into mac (address,vendor) values(?, ?)', (mac, vendor_id))
+        c.execute('insert into mac (date,address,vendor) values(?, ?, ?)', (date, mac, vendor_id))
         c.execute('select id from mac where address=?', (mac,))
         row = c.fetchone()
     mac_id = row[0]
@@ -44,7 +44,7 @@ def insert_into_db(fields, db):
     c.execute('select id from ssid where name=?', (ssid,))
     row = c.fetchone()
     if row is None:
-        c.execute('insert into ssid (name) values(?)', (ssid,))
+        c.execute('insert into ssid (date,name) values(?, ?)', (date, ssid,))
         c.execute('select id from ssid where name=?', (ssid,))
         row = c.fetchone()
     ssid_id = row[0]
