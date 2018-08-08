@@ -5,7 +5,9 @@ import argparse
 import sqlite3
 import time
 
-days_retain = 182
+with open('days_of_retention.conf') as days_conf:
+    days_retain = int(days_conf.readlines()[0])
+
 seconds_retain = 60 * 60 * 24 * days_retain
 seconds_since_epoch = int(time.time())
 diff = seconds_since_epoch - seconds_retain
