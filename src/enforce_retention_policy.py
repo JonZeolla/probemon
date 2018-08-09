@@ -38,10 +38,15 @@ def main():
 
     try:
         conn.commit()
-    except sqlite3.OperationalError as e:
-        # db is locked ? Retry again
-        time.sleep(10)
-        conn.commit()
+    except:
+        time.sleep(5)
+        # db is locked, retry
+        try:
+            conn.commit()
+        except sqlite3.OperationalError as e:
+            print(e)
+            conn.close()
+            sys.exit(1)
     conn.close()
     
 main()
