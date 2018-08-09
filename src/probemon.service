@@ -1,0 +1,18 @@
+# For running probemon as a service:
+# 1. replace USER with the appropriate user name
+# 2. place this file in /etc/systemd/system/
+# 3. sudo systemctl daemon-reload
+# 4. sudo systemctl start probemon.service
+# 5. sudo systemctl enable probemon.service
+
+[Unit]
+Description=Probemon Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/USER/probemon/src/probemon.py -c 6
+User=root
+Group=root
+WorkingDirectory=/home/USER/probemon/src

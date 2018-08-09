@@ -97,7 +97,7 @@ def main():
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('-c', '--channel', default=1, type=int, help="the channel to listen on")
     parser.add_argument('-d', '--db', default='probemon.db', help="database file name to use")
-    parser.add_argument('-i', '--interface', required=True, help="the capture interface to use")
+    parser.add_argument('-i', '--interface', required=False, help="the capture interface to use")
     parser.add_argument('-I', '--ignore', action='append', help="mac address to ignore")
     parser.add_argument('-s', '--stdout', action='store_true', default=False, help="also log probe request to stdout")
     args = parser.parse_args()
@@ -106,8 +106,21 @@ def main():
     if args.ignore is not None:
         IGNORED = args.ignore
 
+    iwconfig_output = os.popen('iwconfig').read().split(' ')
+
+    # try to detect the wireless nic if not specified
+    if args.interface is None:
+        iface = iwconfig_output[0]
+    else:
+        iface = args.interface
+
+    # enter monitor mode if necessary
+    if not 'Mode:Monitor' in iwconfig_output:
+        os.system('ifconfig %s down' % iface)
+        os.system('iwconfig %s mode monitor' % iface)
+
     # bring up interface in case it isn't already
-    os.system('ifconfig %s up' % args.interface)
+    os.system('ifconfig %s up' % iface)
 
     conn = sqlite3.connect(args.db)
     c = conn.cursor()
@@ -133,19 +146,19 @@ def main():
     conn.close()
 
     # sniff on specified channel
-    os.system('iwconfig %s channel %d' % (args.interface, args.channel))
+    os.system('iwconfig %s channel %d' % (iface, args.channel))
 
-    print ":: Started listening to probe requests on channel %d on interface %s" % (args.channel, args.interface)
+    print ":: Started listening to probe requests on channel %d on interface %s" % (args.channel, iface)
     while True:
         try:
-            sniff(iface=args.interface, prn=build_packet_cb(args.db, args.stdout, IGNORED),
+            sniff(iface=iface, prn=build_packet_cb(args.db, args.stdout, IGNORED),
                   store=0, lfilter=lambda x:x.haslayer(Dot11ProbeReq))
         # bring the interface back up in case it goes down
         except socket.error as e:
             if str(e) == "[Errno 100] Network is down":
                 print "Lost connection to interface. Restoring..."
-                os.system('ifconfig %s down' % args.interface)
-                os.system('ifconfig %s up' % args.interface)
+                os.system('ifconfig %s down' % iface)
+                os.system('ifconfig %s up' % iface)
                 continue
 
 if __name__ == '__main__':
