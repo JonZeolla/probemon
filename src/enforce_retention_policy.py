@@ -4,9 +4,13 @@
 import argparse
 import sqlite3
 import time
+from yaml import safe_load
 
-with open('days_of_retention.conf') as days_conf:
-    days_retain = int(days_conf.readlines()[0])
+with open('retention.yaml') as retention:
+    try:
+        days_retain = int(safe_load(retention)["days"])
+    except yaml.YAMLError as e:
+        print(e)
 
 seconds_retain = 60 * 60 * 24 * days_retain
 seconds_since_epoch = int(time.time())
