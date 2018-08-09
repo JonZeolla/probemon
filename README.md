@@ -93,7 +93,7 @@ optional arguments:
 These steps have been tested exclusively on Ubuntu 16.04.
 
 ```
-git clone https://github.com/seisollc/probemon
+git clone https://github.com/seisollc/probemon --recurse-submodules
 cd probemon
 sudo apt install sqlite
 sudo pip install -r requirements.txt
