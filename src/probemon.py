@@ -106,6 +106,9 @@ def main():
     if args.ignore is not None:
         IGNORED = args.ignore
 
+    # bring up interface in case it isn't already
+    os.system('ifconfig %s up' % args.interface)
+
     conn = sqlite3.connect(args.db)
     c = conn.cursor()
     # create tables if they do not exist
@@ -133,8 +136,17 @@ def main():
     os.system('iwconfig %s channel %d' % (args.interface, args.channel))
 
     print ":: Started listening to probe requests on channel %d on interface %s" % (args.channel, args.interface)
-    sniff(iface=args.interface, prn=build_packet_cb(args.db, args.stdout, IGNORED),
-        store=0, lfilter=lambda x:x.haslayer(Dot11ProbeReq))
+    while True:
+        try:
+            sniff(iface=args.interface, prn=build_packet_cb(args.db, args.stdout, IGNORED),
+                  store=0, lfilter=lambda x:x.haslayer(Dot11ProbeReq))
+        # bring the interface back up in case it goes down
+        except socket.error as e:
+            if str(e) == "[Errno 100] Network is down":
+                print "Lost connection to interface. Restoring..."
+                os.system('ifconfig %s down' % args.interface)
+                os.system('ifconfig %s up' % args.interface)
+                continue
 
 if __name__ == '__main__':
     try:
