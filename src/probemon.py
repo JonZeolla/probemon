@@ -16,8 +16,8 @@ NAME = 'probemon'
 DESCRIPTION = "a command line tool for logging 802.11 probe request frames"
 VERSION = '0.2'
 
-# read config variable from config.txt file
-with open('config.txt') as f:
+# read config variable from probemon.conf
+with open('/etc/opt/probemon.conf') as f:
     exec('\n'.join(f.readlines()))
 
 def insert_into_db(fields, db):
