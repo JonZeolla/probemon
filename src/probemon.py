@@ -28,7 +28,7 @@ def insert_into_db(fields, db):
     c.execute('select id from vendor where name=?', (vendor,))
     row = c.fetchone()
     if row is None:
-        c.execute('insert into vendor (name) values(?)', (vendor,))
+        c.execute('insert into vendor (date,name) values(?, ?)', (date, vendor,))
         c.execute('select id from vendor where name=?', (vendor,))
         row = c.fetchone()
     vendor_id = row[0]
@@ -36,7 +36,7 @@ def insert_into_db(fields, db):
     c.execute('select id from mac where address=?', (mac,))
     row = c.fetchone()
     if row is None:
-        c.execute('insert into mac (address,vendor) values(?, ?)', (mac, vendor_id))
+        c.execute('insert into mac (date,address,vendor) values(?, ?, ?)', (date, mac, vendor_id))
         c.execute('select id from mac where address=?', (mac,))
         row = c.fetchone()
     mac_id = row[0]
@@ -44,7 +44,7 @@ def insert_into_db(fields, db):
     c.execute('select id from ssid where name=?', (ssid,))
     row = c.fetchone()
     if row is None:
-        c.execute('insert into ssid (name) values(?)', (ssid,))
+        c.execute('insert into ssid (date,name) values(?, ?)', (date, ssid,))
         c.execute('select id from ssid where name=?', (ssid,))
         row = c.fetchone()
     ssid_id = row[0]
@@ -112,14 +112,14 @@ def main():
     conn = sqlite3.connect(args.db)
     c = conn.cursor()
     # create tables if they do not exist
-    sql = 'create table if not exists vendor(id integer not null primary key, name text)'
+    sql = 'create table if not exists vendor(date float, id integer not null primary key, name text)'
     c.execute(sql)
-    sql = '''create table if not exists mac(id integer not null primary key, address text,
+    sql = '''create table if not exists mac(date float, id integer not null primary key, address text,
         vendor integer,
         foreign key(vendor) references vendor(id)
         )'''
     c.execute(sql)
-    sql = 'create table if not exists ssid(id integer not null primary key, name text)'
+    sql = 'create table if not exists ssid(date float, id integer not null primary key, name text)'
     c.execute(sql)
     sql = '''create table if not exists probemon(date float,
         mac integer,
