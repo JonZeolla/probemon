@@ -53,10 +53,15 @@ def insert_into_db(fields, db):
 
     try:
         conn.commit()
-    except sqlite3.OperationalError as e:
-        # db is locked ? Retry again
-        time.sleep(10)
-        conn.commit()
+    except:
+        time.sleep(5)
+        # db is locked, retry
+        try:
+            conn.commit()
+        except sqlite3.OperationalError as e:
+            print(e)
+            conn.close()
+            sys.exit(1)
     conn.close()
 
 def build_packet_cb(db, stdout, ignored):
@@ -142,7 +147,17 @@ def main():
         foreign key(ssid) references ssid(id)
         )'''
     c.execute(sql)
-    conn.commit()
+    try:
+        conn.commit()
+    except:
+        time.sleep(5)
+        # db is locked, retry
+        try:
+            conn.commit()
+        except sqlite3.OperationalError as e:
+            print(e)
+            conn.close()
+            sys.exit(1)
     conn.close()
 
     # sniff on specified channel
