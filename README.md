@@ -93,6 +93,10 @@ optional arguments:
 These steps have been tested exclusively on Ubuntu 16.04.
 
 ```
+git clone https://github.com/seisollc/probemon
+cd probemon
+sudo apt install sqlite
+sudo pip install -r requirements.txt
 sudo mkdir /etc/opt/ /opt/probemon/
 sudo cp -Rp etc/. /etc/opt/
 sudo cp -Rp src/. /opt/probemon/
