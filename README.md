@@ -101,6 +101,8 @@ sudo mkdir /etc/opt/ /opt/probemon/
 sudo cp -Rp etc/. /etc/opt/
 sudo cp -Rp src/. /opt/probemon/
 sudo cp -p probemon.service /etc/systemd/system/
+# Replace "USER" with the appropriate user which was used to do the git clone
+sudo vi /etc/systemd/system/probemon.service
 sudo systemctl daemon-reload
 sudo systemctl start probemon.service
 sudo systemctl enable probemon.service
