@@ -6,7 +6,7 @@ import sqlite3
 import time
 from yaml import safe_load
 
-with open('retention.yaml') as retention:
+with open('/etc/opt/probemon_retention.conf') as retention:
     try:
         days_retain = int(safe_load(retention)["days"])
     except yaml.YAMLError as e:

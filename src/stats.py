@@ -19,8 +19,8 @@ NUMOFSECSINADAY = 60*60*24
 MAX_VENDOR_LENGTH = 25
 MAX_SSID_LENGTH = 15
 
-# read config variable from config.txt file
-with open('config.txt') as f:
+# read config variable from probemon.conf
+with open('/etc/opt/probemon.conf') as f:
     exec('\n'.join(f.readlines()))
 
 def is_local_bit_set(mac):

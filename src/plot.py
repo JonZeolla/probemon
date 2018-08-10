@@ -27,8 +27,8 @@ class MyLine2DHandler(object):
         handlebox.add_artist(patch)
         return patch
 
-# read config variable from config.txt file
-with open('config.txt') as f:
+# read config variable from probemon.conf
+with open('/etc/opt/probemon.conf') as f:
     exec('\n'.join(f.readlines()))
 MERGED = (m[:8] for m in MERGED)
 

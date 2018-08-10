@@ -89,6 +89,25 @@ optional arguments:
   -z, --zero            filter rssi value of 0
 ```
 
+# Installing probemon
+These steps have been tested exclusively on Ubuntu 16.04.
+
+```
+git clone https://github.com/seisollc/probemon --recurse-submodules
+cd probemon
+sudo apt install sqlite
+sudo pip install -r requirements.txt
+sudo mkdir /etc/opt/ /opt/probemon/
+sudo cp -Rp etc/. /etc/opt/
+sudo cp -Rp src/. /opt/probemon/
+sudo cp -p probemon.service /etc/systemd/system/
+# Replace "USER" with the appropriate user which was used to do the git clone
+sudo vi /etc/systemd/system/probemon.service
+sudo systemctl daemon-reload
+sudo systemctl start probemon.service
+sudo systemctl enable probemon.service
+```
+
 # Notes
 This is still using python2 😳 🤦 🕳️. This is easily converted to python3 script with 2to3 though.
 
